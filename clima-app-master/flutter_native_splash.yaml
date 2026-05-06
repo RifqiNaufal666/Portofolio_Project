@@ -1,0 +1,17 @@
+flutter_native_splash:
+  color: "#ffffff"
+  image: assets/imgs/core/clima_logo_lebel_no_bg.png
+  branding: assets/imgs/core/clima_logo_no_bg.png
+
+  color_dark: "#ffffff"
+  image_dark: assets/imgs/core/clima_logo_lebel_no_bg.png
+  branding_dark: assets/imgs/core/clima_logo_no_bg.png
+
+  android_12:
+    image: assets/imgs/core/clima_logo_no_bg.png
+    icon_background_color: "#ffffff"
+
+    image_dark: assets/imgs/core/clima_logo_no_bg.png
+    icon_background_color_dark: "#ffffff"
+
+  web: false

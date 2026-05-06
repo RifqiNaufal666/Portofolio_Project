@@ -1,0 +1,22 @@
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "clima-app-747aa",
+          "appId": "1:194726077821:android:b69159ed3877901723d814",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/configs/networks/firebase_options.dart": {
+          "projectId": "clima-app-747aa",
+          "configurations": {
+            "android": "1:194726077821:android:b69159ed3877901723d814",
+            "ios": "1:194726077821:ios:f9722d6c27b974cb23d814"
+          }
+        }
+      }
+    }
+  }
+}
