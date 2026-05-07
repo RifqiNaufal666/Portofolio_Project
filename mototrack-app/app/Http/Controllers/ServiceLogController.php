@@ -9,22 +9,35 @@ use Illuminate\Http\Request;
 
 class ServiceLogController extends Controller
 {
+    /**
+     * Menampilkan daftar riwayat servis.
+     * Menggunakan Eager Loading (with) untuk menghindari N+1 Query Problem.
+     */
     public function index() {
         $logs = ServiceLog::with('sparepart','mechanic')->get();
         return view('services.index', compact('logs'));
     }
 
+    /**
+     * Menampilkan form tambah data servis.
+     * Mengambil master data sparepart dan mekanik untuk dropdown.
+     */
     public function create() {
-    $spareparts = Sparepart::all();
-    $mechanics = Mechanic::all();
-    return view('services.create', compact('spareparts', 'mechanics'));
-}
+        $spareparts = Sparepart::all();
+        $mechanics = Mechanic::all();
+        return view('services.create', compact('spareparts', 'mechanics'));
+    }
 
+    /**
+     * Menyimpan data servis baru ke database.
+     * Menerapkan prinsip validasi untuk integritas data.
+     */
     public function store(Request $request) {
         $validated = $request->validate([
             'customer_name' => 'required',
             'motorcycle_model' => 'required',
             'sparepart_id' => 'required|exists:spareparts,id',
+            'mechanic_id' => 'required|exists:mechanics,id',
             'quantity' => 'required|integer|min:1',
             'service_date' => 'required|date',
         ]);
@@ -34,18 +47,27 @@ class ServiceLogController extends Controller
         return redirect('/services')->with('success', 'Data servis berhasil dicatat!');
     }
 
+    /**
+     * Menampilkan form edit berdasarkan ID.
+     */
     public function edit($id) {
-    $service = ServiceLog::findOrFail($id);
-    $spareparts = Sparepart::all();
-    $mechanics = Mechanic::all();
-    return view('services.edit', compact('service', 'spareparts', 'mechanics'));
+        // findOrFail akan otomatis menampilkan halaman 404 jika ID tidak ditemukan di database
+        $service = ServiceLog::findOrFail($id);
+        $spareparts = Sparepart::all();
+        $mechanics = Mechanic::all();
+        
+        return view('services.edit', compact('service', 'spareparts', 'mechanics'));
     }
 
+    /**
+     * Memperbarui data di database.
+     */
     public function update(Request $request, $id) {
         $validated = $request->validate([
             'customer_name' => 'required',
             'motorcycle_model' => 'required',
             'sparepart_id' => 'required|exists:spareparts,id',
+            'mechanic_id' => 'required|exists:mechanics,id',
             'quantity' => 'required|integer|min:1',
             'service_date' => 'required|date',
         ]);
@@ -56,6 +78,9 @@ class ServiceLogController extends Controller
         return redirect('/services')->with('success', 'Riwayat servis berhasil diperbarui!');
     }
 
+    /**
+     * Menghapus riwayat servis dari database.
+     */
     public function destroy($id) {
         $service = ServiceLog::findOrFail($id);
         $service->delete();
