@@ -44,7 +44,7 @@ class ServiceLogController extends Controller
         // 1. Ambil data sparepart yang dipilih
         $sparepart = Sparepart::findOrFail($request->sparepart_id);
 
-        // 2. LOGIKA BISNIS: Cek apakah stok mencukupi?
+        // 2. Cek apakah stok mencukupi?
         if ($sparepart->stock < $request->quantity) {
             // Jika kurang, kembalikan user ke form dengan pesan error
             return back()->withErrors(['quantity' => 'Gagal! Stok sparepart tidak mencukupi. Sisa stok: ' . $sparepart->stock])->withInput();
@@ -53,7 +53,7 @@ class ServiceLogController extends Controller
         // 3. Jika stok aman, simpan data log servis
         ServiceLog::create($validated);
 
-        // 4. Kurangi stok sparepart sesuai jumlah (quantity) yang dipakai
+        // 4. Decrement stok sparepart sesuai jumlah (quantity) yang dipakai
         $sparepart->decrement('stock', $request->quantity);
 
         return redirect('/services')->with('success', 'Data servis berhasil dicatat !');
@@ -63,7 +63,7 @@ class ServiceLogController extends Controller
      * Menampilkan form edit berdasarkan ID.
      */
     public function edit($id) {
-        // findOrFail akan otomatis menampilkan halaman 404 jika ID tidak ditemukan di database
+        // findOrFail otomatis menampilkan halaman 404 if ID tidak ditemukan di database
         $service = ServiceLog::findOrFail($id);
         $spareparts = Sparepart::all();
         $mechanics = Mechanic::all();
