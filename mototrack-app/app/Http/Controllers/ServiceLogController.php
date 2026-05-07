@@ -29,8 +29,7 @@ class ServiceLogController extends Controller
     }
 
     /**
-     * Menyimpan data servis baru ke database.
-     * Menerapkan prinsip validasi untuk integritas data.
+     * Menyimpan data servis baru ke database dan mengurangi stok.
      */
     public function store(Request $request) {
         $validated = $request->validate([
@@ -42,9 +41,22 @@ class ServiceLogController extends Controller
             'service_date' => 'required|date',
         ]);
 
+        // 1. Ambil data sparepart yang dipilih
+        $sparepart = Sparepart::findOrFail($request->sparepart_id);
+
+        // 2. LOGIKA BISNIS: Cek apakah stok mencukupi?
+        if ($sparepart->stock < $request->quantity) {
+            // Jika kurang, kembalikan user ke form dengan pesan error
+            return back()->withErrors(['quantity' => 'Gagal! Stok sparepart tidak mencukupi. Sisa stok: ' . $sparepart->stock])->withInput();
+        }
+
+        // 3. Jika stok aman, simpan data log servis
         ServiceLog::create($validated);
 
-        return redirect('/services')->with('success', 'Data servis berhasil dicatat!');
+        // 4. Kurangi stok sparepart sesuai jumlah (quantity) yang dipakai
+        $sparepart->decrement('stock', $request->quantity);
+
+        return redirect('/services')->with('success', 'Data servis berhasil dicatat !');
     }
 
     /**

@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SparepartController;
 use App\Http\Controllers\ServiceLogController;
 
-Route::get('/', function () { return view('welcome');});
+Route::get('/', function () { return redirect('/services'); });
 
 // Rute Sparepart
 Route::get('/spareparts', [SparepartController::class, 'index']);
